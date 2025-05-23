@@ -102,22 +102,36 @@ HEBREW_ERROR_TRANSLATIONS = {
     "module object is not callable": "המודול אינו ניתן לקריאה",
     "dictionary changed size during iteration": "המילון השתנה בזמן איטרציה",
     "object is not subscriptable": "האובייקט אינו תומך באינדוקס",
+    "can only concatenate str (not \"int\") to str": "לא ניתן לשרשר מחרוזת (str) עם סוג אחר",
+    "is not defined in module": "אינו מוגדר במודול",
+    "invalid character in identifier": "תו לא חוקי במזהה",
+    "unterminated string literal": "מחרוזת לא נסגרה כראוי",
+    "unexpected EOF while parsing": "סוף קובץ (EOF) לא צפוי בזמן הפענוח",
+    "'(' was never closed": "סוגר '(' לא נסגר כראוי",
+    "bad operand type for unary": "סוג אופרנד לא תקין עבור אופרטור אונארי",
+    "Missing parentheses in call to": "חסרים סוגריים בקריאה ל",
     # אפשר להרחיב עוד...
 }
 
 def print_hebrew_error(e):
     err_type = type(e).__name__
     err_msg = str(e)
-    # חפש תרגום לפי סוג השגיאה
-    hebrew = HEBREW_ERROR_TRANSLATIONS.get(err_type)
-    # אם אין, חפש לפי טקסט ההודעה
+    hebrew = None
+
+    # First, iterate through all keys to find a substring match in the error message
+    for key in HEBREW_ERROR_TRANSLATIONS:
+        if key in err_msg:
+            hebrew = HEBREW_ERROR_TRANSLATIONS[key]
+            break
+    
+    # If no substring match was found, try to get a translation by error type
     if not hebrew:
-        for key in HEBREW_ERROR_TRANSLATIONS:
-            if key in err_msg:
-                hebrew = HEBREW_ERROR_TRANSLATIONS[key]
-                break
+        hebrew = HEBREW_ERROR_TRANSLATIONS.get(err_type)
+
+    # If still no translation, set to default message
     if not hebrew:
         hebrew = f"שגיאה לא מוכרת: {err_type}"
+    
     print(f"שגיאה: {hebrew} ({err_type})")
     print(f"פרטים: {err_msg}")
 
